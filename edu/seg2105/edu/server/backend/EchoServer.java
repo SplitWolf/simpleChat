@@ -6,6 +6,9 @@ package edu.seg2105.edu.server.backend;
 
 import ocsf.server.*;
 
+import java.io.IOException;
+import java.util.Scanner;
+
 /**
  * This class overrides some of the methods in the abstract 
  * superclass in order to give more functionality to the server.
@@ -15,7 +18,7 @@ import ocsf.server.*;
  * @author Fran&ccedil;ois B&eacute;langer
  * @author Paul Holden
  */
-public class EchoServer extends AbstractServer 
+public class EchoServer extends AbstractServer
 {
   //Class variables *************************************************
   
@@ -71,7 +74,15 @@ public class EchoServer extends AbstractServer
     System.out.println
       ("Server has stopped listening for connections.");
   }
-  
+  @Override
+  public void clientConnected(ConnectionToClient client) {
+    System.out.printf("Client %s connected. %n", client);
+  }
+
+  @Override
+  public void clientDisconnected(ConnectionToClient client) {
+    System.out.printf("Client %s disconnected. %n", client);
+  }
   
   //Class methods ***************************************************
   
@@ -82,7 +93,7 @@ public class EchoServer extends AbstractServer
    * @param args[0] The port number to listen on.  Defaults to 5555 
    *          if no argument is entered.
    */
-  public static void main(String[] args) 
+  public static void main(String[] args)
   {
     int port = 0; //Port to listen on
 
@@ -104,6 +115,13 @@ public class EchoServer extends AbstractServer
     catch (Exception ex) 
     {
       System.out.println("ERROR - Could not listen for clients!");
+    }
+    Scanner testing = new Scanner(System.in);
+    testing.nextLine();
+    try {
+      sv.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 }
