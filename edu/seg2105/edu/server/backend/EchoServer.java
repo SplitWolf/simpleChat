@@ -4,6 +4,7 @@ package edu.seg2105.edu.server.backend;
 // license found at www.lloseng.com 
 
 
+import edu.seg2105.edu.server.ui.ServerConsole;
 import ocsf.server.*;
 
 import java.io.IOException;
@@ -120,13 +121,8 @@ public class EchoServer extends AbstractServer
     {
       System.out.println("ERROR - Could not listen for clients!");
     }
-    Scanner testing = new Scanner(System.in);
-    testing.nextLine();
-    try {
-      sv.close();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    ServerConsole adminConsole = new ServerConsole(sv);
+    adminConsole.accept();
   }
 }
 //End of EchoServer class
