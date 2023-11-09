@@ -83,8 +83,7 @@ public class ChatClient extends AbstractClient
 
   @Override
   public void connectionClosed() {
-    clientUI.display("The server has shutdown. Exiting...");
-    System.exit(0);
+    clientUI.display("Logged Off");
   }
   @Override
   public void connectionException(Exception e) {
