@@ -76,12 +76,16 @@ public class EchoServer extends AbstractServer
   }
   @Override
   public void clientConnected(ConnectionToClient client) {
-    System.out.printf("Client %s connected. %n", client);
+    System.out.printf("%s has connected. %n", client.getInfo("id"));
+  }
+
+  public void clientDisconnected(ConnectionToClient client) {
+    System.out.printf("%s has disconnected. %n", client.getInfo("id"));
   }
 
   @Override
-  public void clientDisconnected(ConnectionToClient client) {
-    System.out.printf("Client %s disconnected. %n", client);
+  public void clientException(ConnectionToClient client, Throwable ignored) {
+    System.out.printf("%s has disconnected.", client.getInfo("id"));
   }
   
   //Class methods ***************************************************
