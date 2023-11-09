@@ -52,8 +52,36 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    System.out.println("Message received: " + msg + " from " + client.getInfo("id"));
+    if (msg instanceof String message) {
+      if(message.startsWith("#")) {
+        String[] commandMsg = message.split(" ");
+        String command = commandMsg[0].substring(1);
+        String[] args = new String[commandMsg.length-1];
+        System.arraycopy(commandMsg, 1, args, 0, commandMsg.length - 1);
+        handleCommand(command,args, client);
+        return;
+      }
+    }
+    this.sendToAllClients(client.getInfo("id") + ">" + msg);
+  }
+
+  public void handleCommand(String cmd, String[] args, ConnectionToClient client) {
+    switch (cmd) {
+      case "login":
+        if(client.getInfo("id") == null) {
+          client.setInfo("id",args[0]);
+          String loginMessage = args[0] + " has logged on.";
+          System.out.println(loginMessage);
+          this.sendToAllClients(loginMessage);
+          return;
+        }
+        try {
+          client.sendToClient("Error, Client already logged in. Terminating Connection.");
+          client.close();
+        } catch (IOException e) {
+        }
+    }
   }
     
   /**
