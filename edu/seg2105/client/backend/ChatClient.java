@@ -69,6 +69,18 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromClientUI(String message)
   {
+    if(message.startsWith("#")) {
+      String[] commandMsg = message.split(" ");
+      String command = commandMsg[0].substring(1);
+      String[] args = new String[commandMsg.length-1];
+      System.arraycopy(commandMsg, 1, args, 0, commandMsg.length - 1);
+      handleCommand(command,args);
+      return;
+    }
+    if(!isConnected()) {
+      clientUI.display("Please login before trying to send a message!");
+      return;
+    }
     try
     {
       sendToServer(message);
@@ -103,5 +115,54 @@ public class ChatClient extends AbstractClient
     catch(IOException e) {}
     System.exit(0);
   }
+
+  public void handleCommand(String cmd, String[] args) {
+    switch (cmd) {
+      case "quit":
+        quit();
+        break;
+      case "logoff":
+        try
+        {
+          closeConnection();
+        }
+        catch(IOException e) {}
+        break;
+      case "sethost":
+        if(isConnected()) {
+          clientUI.display("You must first logoff to set the host.");
+          return;
+        }
+        setHost(args[0]);
+        break;
+      case "setport":
+        if(isConnected()) {
+          clientUI.display("You must first logoff to set the port.");
+          return;
+        }
+        setPort(Integer.parseInt(args[0]));
+        break;
+      case "login":
+        if(!isConnected()) {
+          try {
+            openConnection();
+          } catch (IOException e) {
+            clientUI.display("Failed to open connection. Exiting...");
+            quit();
+          }
+        }
+        break;
+      case "gethost":
+        clientUI.display("Host: " + getHost());
+        break;
+      case "getport":
+        clientUI.display("Port: " + getPort());
+        break;
+      default:
+        clientUI.display("Invalid Command!");
+        break;
+    }
+  }
+
 }
 //End of ChatClient class
